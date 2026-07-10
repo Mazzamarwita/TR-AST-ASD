@@ -2,10 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* =========================================================
-   STRUCT NODE
-   ========================================================= */
-
+//VARIABEL DALAM STRUCT
 typedef struct Node {
     int id;
     char nama[50];
@@ -16,35 +13,22 @@ typedef struct Node {
     int jumlahMalam;
     int hargaKamar;
     int totalBayar;
-
     struct Node *next;
 } Node;
 
-
-/* =========================================================
-   HEAD LINKED LIST
-   ========================================================= */
-
+//HEAD LINKED LIST
 Node *head = NULL;
 
-
-/* =========================================================
-   PROTOTYPE FUNGSI
-   ========================================================= */
-
+//FUNGSI YANG DIPAKAI
 void menuUtama();
-
 void tambahReservasi();
 void tampilkanReservasi();
 void ubahReservasi();
 void hapusReservasi();
-
 void cariReservasi();
 void urutkanNama();
-
 void simpanFile();
 void bacaFile();
-
 void pilihKamar(Node *data);
 void tampilSatuData(Node *data);
 int cekId(int id);
@@ -52,30 +36,24 @@ void pauseProgram();
 void hapusSemuaMemori();
 
 
-/* =========================================================
-   FUNGSI MAIN
-   ========================================================= */
-
+//PROGRAM UTAMA
 int main() {
     system("cls");
 
-    /* Membaca data dari file */
+    //MEMBACA DATA DARI FILE
     bacaFile();
 
-    /* Menjalankan menu utama */
+    //MENJALANKAN MENU UTAMA
     menuUtama();
 
-    /* Membebaskan memori */
+    //MEMBEBASKAN MEMORI
     hapusSemuaMemori();
 
     return 0;
 }
 
 
-/* =========================================================
-   MENU UTAMA
-   ========================================================= */
-
+//MAIN MENU
 void menuUtama() {
     int pilihan;
 
@@ -143,11 +121,7 @@ void menuUtama() {
 }
 
 
-/* =========================================================
-   CREATE
-   TAMBAH RESERVASI
-   ========================================================= */
-
+//CREATE: TAMBAH RESERVASI
 void tambahReservasi() {
     Node *baru;
     Node *bantu;
@@ -161,21 +135,21 @@ void tambahReservasi() {
     printf("         TAMBAH RESERVASI\n");
     printf("========================================\n");
 
-    /* Membuat node baru */
+    //MEMBUAT NODE BARU
     baru = (Node *) malloc(sizeof(Node));
 
-    /* Cek memori */
+    //CEK MEMORI
     if (baru == NULL) {
         printf("\nMemori tidak tersedia!\n");
         pauseProgram();
         return;
     }
 
-    /* Input ID */
+    //INPUT ID
     printf("Masukkan ID Reservasi : ");
     scanf("%d", &idBaru);
 
-    /* Cek ID */
+    //CEK ID
     if (cekId(idBaru) == 1) {
         printf("\nID sudah digunakan!\n");
         free(baru);
@@ -185,26 +159,26 @@ void tambahReservasi() {
 
     baru->id = idBaru;
 
-    /* Input nama */
+    //INPUT NAMA
     printf("Masukkan Nama Tamu    : ");
     scanf(" %[^\n]", baru->nama);
 
-    /* Input telepon */
+    //INPUT NO TELP
     printf("Masukkan No Telepon   : ");
     scanf(" %[^\n]", baru->noTelp);
 
-    /* Pilih kamar */
+    //PILIH KAMAR
     pilihKamar(baru);
 
-    /* Input Check-In */
+    //INPUT CHECK-IN
     printf("\n========================================\n");
     printf("          TANGGAL CHECK-IN\n");
     printf("========================================\n");
     printf("Masukkan tanggal (DD MM YYYY): ");
-    scanf("%d %d %d", &hari, &bulan, &tahun);2
+    scanf("%d %d %d", &hari, &bulan, &tahun);
     
 
-    /* Ubah menjadi DD/MM/YYYY */
+    //CONVERT DATA MENJADI DD/MM/YYYY
     sprintf(
         baru->checkIn,
         "%02d/%02d/%04d",
@@ -213,14 +187,14 @@ void tambahReservasi() {
         tahun
     );
 
-    /* Input Check-Out */
+    //INPUT CHECK-OUT
     printf("\n========================================\n");
     printf("         TANGGAL CHECK-OUT\n");
     printf("========================================\n");
     printf("Masukkan tanggal (DD MM YYYY): ");
     scanf("%d %d %d", &hari, &bulan, &tahun);
 
-    /* Ubah menjadi DD/MM/YYYY */
+    //CONVERT DATA MENJADI DD/MM/YYYY
     sprintf(
         baru->checkOut,
         "%02d/%02d/%04d",
@@ -229,11 +203,11 @@ void tambahReservasi() {
         tahun
     );
 
-    /* Input jumlah malam */
+    //INPUT JUMLAH MALAM
     printf("\nJumlah Malam : ");
     scanf("%d", &baru->jumlahMalam);
 
-    /* Validasi sederhana */
+    //JUMLAH MALAM TIDAK BOLEH - ATAU 0
     if (baru->jumlahMalam <= 0) {
         printf("\nJumlah malam harus lebih dari 0!\n");
         free(baru);
@@ -241,32 +215,32 @@ void tambahReservasi() {
         return;
     }
 
-    /* Hitung total bayar */
+    //MENGHITUNG TOTAL BAYAR
     baru->totalBayar =
         baru->hargaKamar * baru->jumlahMalam;
 
-    /* Node baru belum terhubung */
+    //NODE BARU BELUM TERHUBUNG
     baru->next = NULL;
 
-    /* Jika linked list kosong */
+    //KALO LINKED LIST KOSONG
     if (head == NULL) {
         head = baru;
     }
 
-    /* Jika linked list sudah ada */
+    //KALO LINKED LIST UDAH ADA
     else {
         bantu = head;
 
-        /* Cari node terakhir */
+        //CARI NODE TERAKHIR
         while (bantu->next != NULL) {
             bantu = bantu->next;
         }
 
-        /* Sambungkan node */
+        //NYAMBUNGIN NODE
         bantu->next = baru;
     }
 
-    /* Simpan ke file */
+    //NYIMPEN FILE
     simpanFile();
 
     system("cls");
@@ -289,11 +263,7 @@ void tambahReservasi() {
 }
 
 
-/* =========================================================
-   READ
-   TAMPILKAN SEMUA RESERVASI
-   ========================================================= */
-
+//READ: MENAMPILKAN SEMUA RESERVASI
 void tampilkanReservasi() {
     Node *bantu;
     int nomor = 1;
@@ -304,17 +274,17 @@ void tampilkanReservasi() {
     printf("              DATA RESERVASI HOTEL\n");
     printf("==================================================\n");
 
-    /* Cek data kosong */
+    //CEK DATA KOSONG
     if (head == NULL) {
         printf("\nBelum ada data reservasi.\n");
         pauseProgram();
         return;
     }
 
-    /* Mulai dari head */
+    //MULAI DARI HEAD
     bantu = head;
 
-    /* Traversal Linked List */
+    //TRAVERSAL LINKED LIST
     while (bantu != NULL) {
         printf("\nData Reservasi Ke-%d\n", nomor);
         printf("--------------------------------------------------\n");
@@ -329,7 +299,7 @@ void tampilkanReservasi() {
         printf("Total Bayar   : Rp %d\n", bantu->totalBayar);
         printf("--------------------------------------------------\n");
 
-        /* Pindah node */
+        //PINDAH NODE
         bantu = bantu->next;
         nomor++;
     }
@@ -338,10 +308,7 @@ void tampilkanReservasi() {
 }
 
 
-/* =========================================================
-   UPDATE
-   UBAH RESERVASI
-   ========================================================= */
+//UPDATE: UBAH RESERVASI
 
 void ubahReservasi() {
     Node *bantu;
@@ -355,21 +322,21 @@ void ubahReservasi() {
     printf("          UBAH RESERVASI\n");
     printf("========================================\n");
 
-    /* Cek data kosong */
+    //CEK DATA KOSONG
     if (head == NULL) {
         printf("\nBelum ada data reservasi.\n");
         pauseProgram();
         return;
     }
 
-    /* Input ID */
+    //INPUT ID
     printf("Masukkan ID yang diubah : ");
     scanf("%d", &idCari);
 
-    /* Mulai dari head */
+    //MULAI DARI HEAD
     bantu = head;
 
-    /* Mencari data */
+    //NYARI DATA
     while (bantu != NULL) {
 
         if (bantu->id == idCari) {
@@ -385,18 +352,18 @@ void ubahReservasi() {
             printf("Check-Out   : %s\n", bantu->checkOut);
             printf("========================================\n");
 
-            /* Input nama baru */
+            //INPUT NAMA BARU
             printf("\nMasukkan Nama Baru    : ");
             scanf(" %[^\n]", bantu->nama);
 
-            /* Input telepon baru */
+            //INPUT NOMOR BARU
             printf("Masukkan No Telp Baru : ");
             scanf(" %[^\n]", bantu->noTelp);
 
-            /* Pilih kamar baru */
+            //PILIH KAMAR BARU
             pilihKamar(bantu);
 
-            /* Check-In baru */
+            //CHECK-IN BARU
             printf("\n========================================\n");
             printf("        TANGGAL CHECK-IN BARU\n");
             printf("========================================\n");
@@ -413,7 +380,7 @@ void ubahReservasi() {
                 tahun
             );
 
-            /* Check-Out baru */
+            //CHECK-OUT BARU
             printf("\n========================================\n");
             printf("       TANGGAL CHECK-OUT BARU\n");
             printf("========================================\n");
@@ -430,20 +397,20 @@ void ubahReservasi() {
                 tahun
             );
 
-            /* Jumlah malam baru */
+            //JUMLAH MALAM BARU
             printf("\nJumlah Malam Baru : ");
             scanf("%d", &bantu->jumlahMalam);
 
-            /* Validasi sederhana */
+            //VALIDASI
             if (bantu->jumlahMalam <= 0) {
                 bantu->jumlahMalam = 1;
             }
 
-            /* Hitung ulang total */
+            //HITUNG ULANG TOTAL
             bantu->totalBayar =
                 bantu->hargaKamar * bantu->jumlahMalam;
 
-            /* Simpan perubahan */
+            //MENYIMPAN PERUBAHAN
             simpanFile();
 
             system("cls");
@@ -463,7 +430,7 @@ void ubahReservasi() {
             return;
         }
 
-        /* Pindah node */
+        //PINDAH NODE
         bantu = bantu->next;
     }
 
@@ -472,11 +439,7 @@ void ubahReservasi() {
 }
 
 
-/* =========================================================
-   DELETE
-   HAPUS RESERVASI
-   ========================================================= */
-
+//DELETE: HAPUS RESERVASI
 void hapusReservasi() {
     Node *bantu;
     Node *sebelum;
@@ -490,22 +453,22 @@ void hapusReservasi() {
     printf("         HAPUS RESERVASI\n");
     printf("========================================\n");
 
-    /* Cek data kosong */
+    //CEK DATA KOSONG
     if (head == NULL) {
         printf("\nBelum ada data reservasi.\n");
         pauseProgram();
         return;
     }
 
-    /* Input ID */
+    //INPUT ID
     printf("Masukkan ID yang dihapus : ");
     scanf("%d", &idHapus);
 
-    /* Posisi awal */
+    //POSISI AWAL
     bantu = head;
     sebelum = NULL;
 
-    /* Mencari data */
+    //MEENCARI DATA
     while (bantu != NULL) {
 
         if (bantu->id == idHapus) {
@@ -522,26 +485,26 @@ void hapusReservasi() {
             printf("Total Bayar : Rp %d\n", bantu->totalBayar);
             printf("========================================\n");
 
-            /* Konfirmasi */
+            //KONFIRMASI
             printf("\nYakin ingin menghapus? (y/n) : ");
             scanf(" %c", &yakin);
 
             if (yakin == 'y' || yakin == 'Y') {
 
-                /* Jika menghapus head */
+                //JIKA MENGHAPUS HEAD
                 if (sebelum == NULL) {
                     head = bantu->next;
                 }
 
-                /* Jika bukan head */
+                //JIKA BUKAN HEAD
                 else {
                     sebelum->next = bantu->next;
                 }
 
-                /* Hapus node */
+                //HAPUS NODE
                 free(bantu);
 
-                /* Simpan perubahan */
+                //SIMPAN PERUBAHAN
                 simpanFile();
 
                 printf("\nData berhasil dihapus!\n");
@@ -555,7 +518,7 @@ void hapusReservasi() {
             return;
         }
 
-        /* Pindah node */
+        //PINDAH NODE
         sebelum = bantu;
         bantu = bantu->next;
     }
@@ -565,10 +528,7 @@ void hapusReservasi() {
 }
 
 
-/* =========================================================
-   SEARCHING
-   LINEAR SEARCH BERDASARKAN ID
-   ========================================================= */
+//SEARCHING: LINEAR SEARCH BERDASARKAN ID
 
 void cariReservasi() {
     Node *bantu;
@@ -580,21 +540,21 @@ void cariReservasi() {
     printf("          CARI RESERVASI\n");
     printf("========================================\n");
 
-    /* Cek data kosong */
+    //CEK DATA KOSONG
     if (head == NULL) {
         printf("\nBelum ada data reservasi.\n");
         pauseProgram();
         return;
     }
 
-    /* Input ID */
+    //INPUT ID
     printf("Masukkan ID Reservasi : ");
     scanf("%d", &idCari);
 
-    /* Mulai dari head */
+    //MULAI DARI HEAD
     bantu = head;
 
-    /* Linear Search */
+    //LINEAR SEARCH
     while (bantu != NULL) {
 
         if (bantu->id == idCari) {
@@ -610,7 +570,7 @@ void cariReservasi() {
             return;
         }
 
-        /* Pindah node */
+        //PINDAH NODE
         bantu = bantu->next;
     }
 
@@ -619,10 +579,7 @@ void cariReservasi() {
 }
 
 
-/* =========================================================
-   SORTING
-   BUBBLE SORT BERDASARKAN NAMA
-   ========================================================= */
+//SORTING: BUBBLE SORT BERDASARKAN NAMA (A-Z)
 
 void urutkanNama() {
     Node *i;
@@ -645,14 +602,14 @@ void urutkanNama() {
     printf("      URUTKAN BERDASARKAN NAMA\n");
     printf("========================================\n");
 
-    /* Cek data kosong */
+    //CEK DATA KOSONG
     if (head == NULL) {
         printf("\nBelum ada data reservasi.\n");
         pauseProgram();
         return;
     }
 
-    /* Jika hanya satu data */
+    //JIKA HANYA SATU DATA
     if (head->next == NULL) {
         printf("\nData hanya satu.\n");
         printf("Tidak perlu melakukan sorting.\n");
@@ -660,55 +617,55 @@ void urutkanNama() {
         return;
     }
 
-    /* Bubble Sort */
+    //BUBLE SORT
     for (i = head; i != NULL; i = i->next) {
 
         for (j = head; j->next != NULL; j = j->next) {
 
-            /* Bandingkan nama */
+            //BANDINGIN NAMA
             if (strcmp(j->nama, j->next->nama) > 0) {
 
-                /* Tukar ID */
+                //TUKAR ID
                 tempId = j->id;
                 j->id = j->next->id;
                 j->next->id = tempId;
 
-                /* Tukar nama */
+                //TUKAR NAMA
                 strcpy(tempNama, j->nama);
                 strcpy(j->nama, j->next->nama);
                 strcpy(j->next->nama, tempNama);
 
-                /* Tukar telepon */
+                //TUKAR NO TELP
                 strcpy(tempTelp, j->noTelp);
                 strcpy(j->noTelp, j->next->noTelp);
                 strcpy(j->next->noTelp, tempTelp);
 
-                /* Tukar kamar */
+                //TUKAR KAMAR
                 strcpy(tempKamar, j->tipeKamar);
                 strcpy(j->tipeKamar, j->next->tipeKamar);
                 strcpy(j->next->tipeKamar, tempKamar);
 
-                /* Tukar Check-In */
+                //TUKAR CHECK-IN
                 strcpy(tempCheckIn, j->checkIn);
                 strcpy(j->checkIn, j->next->checkIn);
                 strcpy(j->next->checkIn, tempCheckIn);
 
-                /* Tukar Check-Out */
+                //TUKAR CHECK-OUT
                 strcpy(tempCheckOut, j->checkOut);
                 strcpy(j->checkOut, j->next->checkOut);
                 strcpy(j->next->checkOut, tempCheckOut);
 
-                /* Tukar jumlah malam */
+                //TUKAR JUMLAH KAMAR
                 tempJumlah = j->jumlahMalam;
                 j->jumlahMalam = j->next->jumlahMalam;
                 j->next->jumlahMalam = tempJumlah;
 
-                /* Tukar harga */
+                //TUKAR HARGA
                 tempHarga = j->hargaKamar;
                 j->hargaKamar = j->next->hargaKamar;
                 j->next->hargaKamar = tempHarga;
 
-                /* Tukar total */
+                //TUKAR TOTAL
                 tempTotal = j->totalBayar;
                 j->totalBayar = j->next->totalBayar;
                 j->next->totalBayar = tempTotal;
@@ -716,7 +673,7 @@ void urutkanNama() {
         }
     }
 
-    /* Simpan hasil sorting */
+    //MENYIMPAN HASIL SORTING
     simpanFile();
 
     system("cls");
@@ -732,9 +689,7 @@ void urutkanNama() {
 }
 
 
-/* =========================================================
-   PILIH JENIS KAMAR
-   ========================================================= */
+//PILIH JENIS KAMAR
 
 void pilihKamar(Node *data) {
     int pilihan;
@@ -749,25 +704,25 @@ void pilihKamar(Node *data) {
     printf("Pilih kamar : ");
     scanf("%d", &pilihan);
 
-    /* Standard */
+    //STANDARD
     if (pilihan == 1) {
         strcpy(data->tipeKamar, "Standard");
         data->hargaKamar = 300000;
     }
 
-    /* Deluxe */
+    //DELUXE
     else if (pilihan == 2) {
         strcpy(data->tipeKamar, "Deluxe");
         data->hargaKamar = 500000;
     }
 
-    /* Suite */
+    //SUITE
     else if (pilihan == 3) {
         strcpy(data->tipeKamar, "Suite");
         data->hargaKamar = 800000;
     }
 
-    /* Pilihan salah */
+    //VALIDASI PILIHAN
     else {
         printf("\nPilihan salah!\n");
         printf("Otomatis memilih Standard.\n");
@@ -778,10 +733,7 @@ void pilihKamar(Node *data) {
 }
 
 
-/* =========================================================
-   TAMPILKAN SATU DATA
-   ========================================================= */
-
+//TAMPILKAN SATU DATA
 void tampilSatuData(Node *data) {
     printf("----------------------------------------\n");
     printf("ID Reservasi  : %d\n", data->id);
@@ -796,18 +748,14 @@ void tampilSatuData(Node *data) {
     printf("----------------------------------------\n");
 }
 
-
-/* =========================================================
-   CEK ID
-   ========================================================= */
-
+//CEK ID
 int cekId(int id) {
     Node *bantu;
 
-    /* Mulai dari head */
+    //MULAI DARI HEAD
     bantu = head;
 
-    /* Cari ID */
+    //CARI ID
     while (bantu != NULL) {
 
         if (bantu->id == id) {
@@ -868,36 +816,33 @@ void simpanFile() {
 }
 
 
-/* =========================================================
-   FILE HANDLING
-   BACA DATA DARI FILE
-   ========================================================= */
+//FILE HANDLING
 
 void bacaFile() {
     FILE *file;
     Node *baru;
     Node *bantu;
 
-    /* Buka file mode read */
+    //BUKA FILE MODE READ
     file = fopen("reservasi.txt", "r");
 
-    /* Jika file belum ada */
+    //VALIDASI JIKA FILE BLM ADA
     if (file == NULL) {
         return;
     }
 
-    /* Membaca sampai selesai */
+    //MEMBACA FILE SAMPAI SELESAI
     while (1) {
 
-        /* Membuat node baru */
+        //MEMBUAT NODE BARU
         baru = (Node *) malloc(sizeof(Node));
 
-        /* Cek memori */
+        //CEK MEMORI
         if (baru == NULL) {
             break;
         }
 
-        /* Membaca satu data */
+        //BACA SATU DATA
         if (fscanf(
                 file,
                 "%d|%49[^|]|%19[^|]|%19[^|]|%14[^|]|%14[^|]|%d|%d|%d\n",
@@ -912,75 +857,70 @@ void bacaFile() {
                 &baru->totalBayar
             ) == 9) {
 
-            /* Node baru belum terhubung */
+            //NODE BARU YANGBELUM TERHUBUNG
             baru->next = NULL;
 
-            /* Jika list kosong */
+            //VALIDASI JIKA LIST KOSONG
             if (head == NULL) {
                 head = baru;
             }
 
-            /* Jika sudah ada data */
+            //VALIDASI JIKA DADTA SUDAH ADA
             else {
                 bantu = head;
 
-                /* Cari node terakhir */
+                //CARI NODE TERAKHIR
                 while (bantu->next != NULL) {
                     bantu = bantu->next;
                 }
 
-                /* Sambungkan node */
+                //SAMBUNGKAN NODE
                 bantu->next = baru;
             }
         }
 
-        /* Jika gagal membaca */
+        //JIKA GAGAL MEMBACA
         else {
             free(baru);
             break;
         }
     }
 
-    /* Tutup file */
+    //TUTUP FILE
     fclose(file);
 }
 
 
-/* =========================================================
-   PAUSE PROGRAM
-   ========================================================= */
+//PAUSE PROGRAM
 
 void pauseProgram() {
     printf("\nTekan ENTER untuk kembali...");
 
-    /* Membersihkan ENTER sebelumnya */
+    //CLEAR ENTER SEBELUMNYA
     getchar();
 
-    /* Menunggu ENTER user */
+    //NUNGGU ENTER USER
     getchar();
 
-    /* Bersihkan layar */
     system("cls");
 }
 
 
-/* =========================================================
-   HAPUS SEMUA MEMORI
-   ========================================================= */
+//HAPUS SEMUA MEMORI
 
 void hapusSemuaMemori() {
     Node *bantu;
 
-    /* Hapus semua node */
+    //HAPUS SEMUA NODE
     while (head != NULL) {
 
-        /* Simpan head */
+        //SIMPAN HEAD
         bantu = head;
 
-        /* Geser head */
+        //GESER HEAD
         head = head->next;
 
-        /* Hapus node */
+        //HAPUS NODE
         free(bantu);
     }
 }
