@@ -769,28 +769,25 @@ int cekId(int id) {
 }
 
 
-/* =========================================================
-   FILE HANDLING
-   SIMPAN DATA KE FILE
-   ========================================================= */
+// FILE HANDLING SIMPAN DATA FILE
 
 void simpanFile() {
     FILE *file;
     Node *bantu;
 
-    /* Buka file mode write */
+    // BUKA FILE NODE WRITE
     file = fopen("reservasi.txt", "w");
 
-    /* Cek file */
+    //CEK FILE
     if (file == NULL) {
         printf("\nFile gagal dibuka!\n");
         return;
     }
 
-    /* Mulai dari head */
+    // MULAI DARI HEAD
     bantu = head;
 
-    /* Simpan semua data */
+    //SIMPAN SEMUA DATA KE FILE
     while (bantu != NULL) {
 
         fprintf(
@@ -807,16 +804,15 @@ void simpanFile() {
             bantu->totalBayar
         );
 
-        /* Pindah node */
+        //PINDAH NODE
         bantu = bantu->next;
     }
 
-    /* Tutup file */
+    //TUTUP FILE
     fclose(file);
 }
 
-
-//FILE HANDLING
+//FILE HANDLING READ FILE
 
 void bacaFile() {
     FILE *file;
