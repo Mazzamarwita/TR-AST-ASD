@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1087,9 +1086,4 @@ void bebaskanMemori() {
 
         free(bantu);
     }
-=======
-#include<stdio.h>
-int main(){
-    printf("halo ajg");
->>>>>>> 016ed59e01a094f6430848478d809509da99526d
 }
